@@ -7,19 +7,33 @@ const App = () => {
   const part3 = 'State of a component'
   const exercises3 = 14
 
+  const Header = (props) => {
+    return <h1>{props.course}</h1>
+  }
+
+  const Part = (props) => {
+    return <p>
+      {props.part} {props.exercise}
+    </p>
+  }
+
+  const Content = () => {
+    return <>
+      <Part part={part1} exercise={exercises1} />
+      <Part part={part2} exercise={exercises2} />
+      <Part part={part3} exercise={exercises3} />
+    </>
+  }
+
+  const Total = () => {
+    return <p>Number of exercises {exercises1 + exercises2 + exercises3}</p>
+  }
+
   return (
     <div>
-      <h1>{course}</h1>
-      <p>
-        {part1} {exercises1}
-      </p>
-      <p>
-        {part2} {exercises2}
-      </p>
-      <p>
-        {part3} {exercises3}
-      </p>
-      <p>Number of exercises {exercises1 + exercises2 + exercises3}</p>
+      <Header course={course} />
+      <Content />
+      <Total />
     </div>
   )
 }
