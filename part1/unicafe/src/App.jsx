@@ -10,6 +10,9 @@ const App = () => {
   const neutralButtonHandler = () => setNeutral(neutral + 1)
   const badButtonHandler = () => setBad(bad + 1)
 
+  const getTotalValue = () => good - bad
+  const getTotalVotes = () => good + neutral + bad
+
   return (
     <div>
       <h1>Give feedback</h1>
@@ -20,6 +23,9 @@ const App = () => {
       <p>Good: {good}</p>
       <p>Neutral: {neutral}</p>
       <p>Bad: {bad}</p>
+      <p>All: {getTotalVotes()}</p>
+      <p>Average: {getTotalValue() / getTotalVotes()}</p>
+      <p>Positive: {good / getTotalVotes() * 100} %</p>
     </div>
   )
 }
