@@ -1,17 +1,24 @@
 import { useState } from 'react'
 
-const Statistics = ({good, neutral, bad}) => {
+const Statistics = ({ good, neutral, bad }) => {
   const getTotalValue = () => good - bad
   const getTotalVotes = () => good + neutral + bad
 
+  const body = (getTotalVotes() == 0) ? (
+    <p>No feedback given</p>
+  ) : (<>
+    <p>Good: {good}</p>
+    <p>Neutral: {neutral}</p>
+    <p>Bad: {bad}</p>
+    <p>All: {getTotalVotes()}</p>
+    <p>Average: {getTotalValue() / getTotalVotes()}</p>
+    <p>Positive: {good / getTotalVotes() * 100} %</p>
+  </>
+  )
+
   return <>
-  <h1>Statistics</h1>
-      <p>Good: {good}</p>
-      <p>Neutral: {neutral}</p>
-      <p>Bad: {bad}</p>
-      <p>All: {getTotalVotes()}</p>
-      <p>Average: {getTotalValue() / getTotalVotes()}</p>
-      <p>Positive: {good / getTotalVotes() * 100} %</p>
+    <h1>Statistics</h1>
+    {body}
   </>
 }
 
