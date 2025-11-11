@@ -1,11 +1,17 @@
 import { useState } from 'react'
 
+const InputWithLabel = ({ id, type, value, setValue }) => <div>
+  <label htmlFor={id}>{id}: </label>
+  <input id={id} type={type} value={value} onChange={(event) => setValue(event.target.value)} />
+</div>
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: 42 }
   ])
   const [newName, setNewName] = useState('')
-  const [newNumber, setNewNumber] = useState()
+  const [newNumber, setNewNumber] = useState('')
+  const [filter, setFilter] = useState('')
 
   const formSubmitHandler = (event) => {
     event.preventDefault()
@@ -14,19 +20,24 @@ const App = () => {
     } else {
       setPersons(persons.concat({ name: newName, number: newNumber }))
     }
-    setNewName("")
+    setNewName('')
+    setNewNumber('')
   }
+
+  const personsToDisplay = persons.filter(({ name }) => name.toLowerCase().includes(filter.toLowerCase()))
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
+      <h2>Add</h2>
       <form onSubmit={formSubmitHandler}>
-        <div>name: <input type="text" value={newName} onChange={(event) => setNewName(event.target.value)} /></div>
-        <div>number: <input type="tel" value={newNumber} onChange={(event) => setNewNumber(event.target.value)} /></div>
+        <InputWithLabel id="name" type="text" value={newName} setValue={setNewName} />
+        <InputWithLabel id="number" type="tel" value={newNumber} setValue={setNewNumber} />
         <div><button type="submit">add</button></div>
       </form>
       <h2>Numbers</h2>
-      <ul>{persons.map(p => <li key={p.name}>{p.name} {p.number}</li>)}</ul>
+      <InputWithLabel id="filter" type="text" value={filter} setValue={setFilter} />
+      <ul>{personsToDisplay.map(p => <li key={p.name}>{p.name} {p.number}</li>)}</ul>
     </div>
   )
 }
