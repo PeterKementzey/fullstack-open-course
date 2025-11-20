@@ -7,33 +7,17 @@ const personsUrlById = (id) => `${personsUrl}/${id}`
 const getPersons = () => axios
     .get(personsUrl)
     .then((response) => response.data)
-    .catch((error) => {
-        console.error("Could not GET persons:", error)
-        return []
-    })
 
 const addPerson = (person) => axios
     .post(personsUrl, person)
     .then((response) => response.data)
-    .catch((error) => {
-        console.error(`Could not POST person ${person.name} with error:`, error, "not posted person:", person)
-        return person
-    })
 
 const deletePerson = (id) => axios
     .delete(personsUrlById(id))
     .then(() => null)
-    .catch((error) => {
-        console.error(`Could not DELETE person with id ${id} with error:`, error)
-        return null
-    })
 
 const updatePerson = (person) => axios
     .put(personsUrlById(person.id), person)
     .then((response) => response.data)
-    .catch((error) => {
-        console.error(`Could not update (PUT) person ${person.name} with error:`, error, "didn't update to:", person)
-        return person
-    })
 
 export default { getPersons, addPerson, deletePerson, updatePerson }

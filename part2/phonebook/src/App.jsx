@@ -32,6 +32,13 @@ const App = () => {
     personsService
       .getPersons()
       .then(setPersons)
+      .catch((error) => {
+        if (error.message) {
+          addNotification(`Could not get contacts with error: ${error.message}`, true)
+        } else {
+          addNotification(`Could not get contacts due to server error`, true)
+        }
+      })
   }
   useEffect(initializePersons, [])
 
@@ -47,6 +54,15 @@ const App = () => {
         ).then((updatedPersons) => {
           addNotification(`Updated ${existingContact.name} to ${newNumber}`, false)
           return updatedPersons
+        }).catch((error) => {
+          if (error.response && error.response.status === 404) {
+            addNotification(`Failed to update because the contact ${newName} could not be found on the server`, true)
+          } else if (error.message) {
+            addNotification(`Could not update person due to error: ${error.message}`, true)
+          } else {
+            addNotification("Could not update person due to error from server", true)
+          }
+          throw error
         })
     ) : (
       personsService
@@ -54,9 +70,15 @@ const App = () => {
         .then((newPerson) =>
           persons.concat(newPerson)
         ).then((extendedPersons) => {
-          const newPerson = extendedPersons[extendedPersons.length - 1]
-          addNotification(`Added ${newPerson.name}`, false)
+          addNotification(`Added ${newName}`, false)
           return extendedPersons
+        }).catch((error) => {
+          if (error.message) {
+            addNotification(`Could not add person due to error: ${error.message}`, true)
+          } else {
+            addNotification("Could not add person due to error from server", true)
+          }
+          throw error
         })
     ))
       .then((changedPersons) => {
@@ -64,14 +86,24 @@ const App = () => {
         setNewName('')
         setNewNumber('')
       })
+      .catch((error) => { })
   }
 
   const deletePerson = (person) => () => {
     if (!window.confirm(`Delete contact ${person.name}?`)) { return }
     const filteredPersons = persons.filter(({ id }) => id !== person.id)
-    personsService.deletePerson(person.id).then(() =>
-      setPersons(filteredPersons)
-    )
+    personsService
+      .deletePerson(person.id)
+      .then(() => setPersons(filteredPersons))
+      .catch((error) => {
+        if (error.response && error.response.status === 404) {
+          addNotification(`Failed to delete because the contact ${person.name} could not be found on the server`, true)
+        } else if (error.message) {
+          addNotification(`Could not delete person due to error: ${error.message}`, true)
+        } else {
+          addNotification("Could not delete person due to error from server", true)
+        }
+      })
   }
 
   const formProps = {
