@@ -32,6 +32,14 @@ const App = () => {
     }
   }
 
+  const deletePerson = (person) => () => {
+    if (!window.confirm(`Delete contact ${person.name}?`)) { return }
+    const filteredPersons = persons.filter(({ id }) => id !== person.id)
+    personsService.deletePerson(person.id).then(() =>
+      setPersons(filteredPersons)
+    )
+  }
+
   const formProps = {
     title: "Add",
     submit: {
@@ -49,9 +57,8 @@ const App = () => {
   return <div>
     <h1>Phonebook</h1>
     <Form {...formProps} />
-    <Contacts contacts={contactsToDisplay} filterValue={filter} setFilter={setFilter} />
+    <Contacts contacts={contactsToDisplay} filterValue={filter} setFilter={setFilter} deletePerson={deletePerson} />
   </div>
-
 }
 
 export default App

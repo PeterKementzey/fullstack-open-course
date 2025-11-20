@@ -2,6 +2,7 @@ import axios from "axios"
 
 const baseUrl = 'http://localhost:3001'
 const personsUrl = `${baseUrl}/persons`
+const personsUrlById = (id) => `${personsUrl}/${id}`
 
 const getPersons = () => axios
     .get(personsUrl)
@@ -19,4 +20,11 @@ const addPerson = (person) => axios
         return person
     })
 
-export default { getPersons, addPerson }
+const deletePerson = (id) => axios
+    .delete(personsUrlById(id))
+    .then(() => null)
+    .catch((error) => {
+        console.error(`Could not DELETE person with id ${id} with error:`, error)
+    })
+
+export default { getPersons, addPerson, deletePerson }
