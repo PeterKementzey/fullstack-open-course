@@ -25,6 +25,15 @@ const deletePerson = (id) => axios
     .then(() => null)
     .catch((error) => {
         console.error(`Could not DELETE person with id ${id} with error:`, error)
+        return null
     })
 
-export default { getPersons, addPerson, deletePerson }
+const updatePerson = (person) => axios
+    .put(personsUrlById(person.id), person)
+    .then((response) => response.data)
+    .catch((error) => {
+        console.error(`Could not update (PUT) person ${person.name} with error:`, error, "didn't update to:", person)
+        return person
+    })
+
+export default { getPersons, addPerson, deletePerson, updatePerson }

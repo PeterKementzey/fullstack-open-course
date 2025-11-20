@@ -9,27 +9,35 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
 
-  const getInitialPersons = () => {
+  const initializePersons = () => {
     personsService
       .getPersons()
       .then(setPersons)
   }
-  useEffect(getInitialPersons, [])
+  useEffect(initializePersons, [])
 
   const submitFormHandler = (event) => {
     event.preventDefault()
-    if (persons.find(({ name }) => name === newName) !== undefined) {
-      alert(`${newName} is already added to phonebook`)
-    } else {
-      const newPerson = { name: newName, number: newNumber }
+    const existingContact = persons.find((person) => person.name === newName)
+    if (existingContact !== undefined && !window.confirm(`Update number of ${newName} to ${newNumber}?`)) { return }
+    ((existingContact !== undefined) ? (
       personsService
-        .addPerson(newPerson)
-        .then((newPerson) => {
-          setPersons(persons.concat(newPerson))
-          setNewName('')
-          setNewNumber('')
-        })
-    }
+        .updatePerson({ ...existingContact, number: newNumber })
+        .then((updatedPerson) =>
+          persons.map((person) => (person.id === updatedPerson.id) ? updatedPerson : person)
+        )
+    ) : (
+      personsService
+        .addPerson({ name: newName, number: newNumber })
+        .then((newPerson) =>
+          persons.concat(newPerson)
+        )
+    ))
+      .then((changedPersons) => {
+        setPersons(changedPersons)
+        setNewName('')
+        setNewNumber('')
+      })
   }
 
   const deletePerson = (person) => () => {
