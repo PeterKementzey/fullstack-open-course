@@ -13,6 +13,12 @@ const findMatchingCountries = (countries, countryFilter) => {
   return exactMatch ? [exactMatch] : matchingCountries
 }
 
+const CountryList = ({ countries, setCountryFilter }) => <ul>{countries.map((country) =>
+  <li key={country.cca2}><label>
+    {country.name.common} <button onClick={() => setCountryFilter(country.name.official)}>show</button>
+  </label></li>
+)}</ul>
+
 const CountryInfo = ({ country }) => <>
   <h1>{country.flag} {country.name.common} {country.flag}</h1>
   <p>Capital: {country.capital}</p>
@@ -46,9 +52,7 @@ const App = () => {
   } else if (matchingCountries.length > 10) {
     searchResult = <p>Too many matches, please specify another filter.</p>
   } else if (matchingCountries.length > 1) {
-    searchResult = <ul>{matchingCountries.map((country) =>
-      <li key={country.cca2}>{country.name.common}</li>
-    )}</ul>
+    searchResult = <CountryList countries={matchingCountries} setCountryFilter={setCountryFilter} />
   } else if (matchingCountries.length == 1) {
     searchResult = <CountryInfo country={matchingCountries[0]} />
   } else {
